@@ -1,0 +1,23 @@
+plugins {
+    id 'application'
+    id 'org.jetbrains.kotlin.jvm' version '1.5.20'
+    id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlin_version"
+}
+
+group "com.example"
+version "0.0.1"
+mainClassName = "com.example.ApplicationKt"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "io.ktor:ktor-server-core:$ktor_version"
+    implementation "io.ktor:ktor-server-netty:$ktor_version"
+    implementation "ch.qos.logback:logback-classic:$logback_version"
+    testImplementation "io.ktor:ktor-server-tests:$ktor_version"
+    implementation group: 'org.ktorm', name: 'ktorm-core', version: '3.4.1'
+    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.25'
+    implementation "io.ktor:ktor-serialization:$ktor_version"
+}
