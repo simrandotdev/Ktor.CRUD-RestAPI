@@ -10,10 +10,7 @@ import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import org.ktorm.dsl.from
-import org.ktorm.dsl.insert
-import org.ktorm.dsl.map
-import org.ktorm.dsl.select
+import org.ktorm.dsl.*
 
 fun Application.notesRoutes() {
     val db = DatabaseConnection.database
@@ -50,5 +47,35 @@ fun Application.notesRoutes() {
             }
         }
 
+        get("/notes/{id}") {
+            val id = call.parameters["id"]?.toInt() ?: -1
+
+            val note = db.from(NotesEntity)
+                .select()
+                .where { NotesEntity.id eq id }
+                .map {
+                    val id = it[NotesEntity.id]!!
+                    val note = it[NotesEntity.note]!!
+                    Note(id = id, note = note)
+                }.firstOrNull()
+
+            if(note == null) {
+                call.respond(
+                    HttpStatusCode.NotFound,
+                    NoteResponse(
+                        success = false,
+                        data = "Could not found note with  id = $id"
+                    )
+                )
+            } else {
+                call.respond(
+                    HttpStatusCode.OK,
+                    NoteResponse(
+                        success = true,
+                        data = note
+                    )
+                )
+            }
+        }
     }
 }
