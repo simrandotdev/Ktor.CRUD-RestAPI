@@ -77,5 +77,35 @@ fun Application.notesRoutes() {
                 )
             }
         }
+
+        put("/notes/{id}"){
+            val id =call.parameters["id"]?.toInt() ?: -1
+            val updatedNote =call.receive<NoteRequest>()
+
+            val rowsEffected = db.update(NotesEntity){
+                set(it.note, updatedNote.note)
+                where{
+                    it.id eq id
+                }
+            }
+
+            if(rowsEffected == 1) {
+                call.respond(
+                    HttpStatusCode.OK,
+                    NoteResponse(
+                        success = true,
+                        data = "Note has been updated"
+                    )
+                )
+            } else {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    NoteResponse(
+                        success = false,
+                        data = "Note failed to update"
+                    )
+                )
+            }
+        }
     }
 }
