@@ -20,4 +20,5 @@ dependencies {
     implementation group: 'org.ktorm', name: 'ktorm-core', version: '3.4.1'
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.25'
     implementation "io.ktor:ktor-serialization:$ktor_version"
+    implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
 }
