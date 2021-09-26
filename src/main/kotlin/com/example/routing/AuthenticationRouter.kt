@@ -10,6 +10,8 @@ import com.example.models.UserCredentials
 import com.example.utils.TokenManager
 import com.typesafe.config.ConfigFactory
 import io.ktor.application.*
+import io.ktor.auth.*
+import io.ktor.auth.jwt.*
 import io.ktor.config.*
 import io.ktor.http.*
 import io.ktor.request.*
@@ -60,7 +62,6 @@ fun Application.authenticationRoutes() {
             )
         }
 
-
         post("/login") {
             val userCredentials = call.receive<UserCredentials>()
             val tokenManager = TokenManager(config)
@@ -102,6 +103,15 @@ fun Application.authenticationRoutes() {
             val token = tokenManager.generateToken(user)
             call.respond(HttpStatusCode.OK,
                         NoteResponse(success = true, data = token))
+        }
+
+        authenticate("auth-jwt") {
+            get("/me") {
+                val principal = call.principal<JWTPrincipal>()
+                val username = principal!!.payload.getClaim("username").asString()
+                val userId = principal!!.payload.getClaim("userId").asInt()
+                call.respondText("Hello, $username with id: $userId.")
+            }
         }
     }
 }
