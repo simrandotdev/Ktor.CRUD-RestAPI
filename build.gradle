@@ -21,4 +21,6 @@ dependencies {
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.25'
     implementation "io.ktor:ktor-serialization:$ktor_version"
     implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
+    implementation "io.ktor:ktor-auth:$ktor_version"
+    implementation "io.ktor:ktor-auth-jwt:$ktor_version"
 }

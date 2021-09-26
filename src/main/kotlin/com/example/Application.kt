@@ -4,6 +4,8 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import com.example.plugins.*
 import io.ktor.application.*
+import io.ktor.auth.*
+import io.ktor.auth.jwt.*
 import io.ktor.features.*
 import io.ktor.serialization.*
 import org.ktorm.database.Database
@@ -14,7 +16,10 @@ fun main() {
         install(ContentNegotiation) {
             json()
         }
+        install(Authentication) {
+            jwt {
 
-
+            }
+        }
     }.start(wait = true)
 }
