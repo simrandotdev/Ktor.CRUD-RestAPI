@@ -14,7 +14,7 @@ import io.ktor.serialization.*
 import org.ktorm.database.Database
 
 fun main() {
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
+    embeddedServer(Netty, port = System.getenv("PORT").toInt(), host = "0.0.0.0") {
         val config = HoconApplicationConfig(ConfigFactory.load())
         val tokenManager = TokenManager(config)
 
