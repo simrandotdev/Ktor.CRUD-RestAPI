@@ -19,7 +19,7 @@ import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.mindrot.jbcrypt.BCrypt
 
-fun Application.authenticationRoutes() {
+fun Application.authenticationRoutes(db: Database) {
     val db = DatabaseConnection.database
     val tokenManager = TokenManager(HoconApplicationConfig(ConfigFactory.load()))
 

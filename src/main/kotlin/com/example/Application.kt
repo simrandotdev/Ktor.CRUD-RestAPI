@@ -1,5 +1,6 @@
 package com.example
 
+import com.example.db.DatabaseConnection
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import com.example.plugins.*
@@ -17,12 +18,13 @@ fun main() {
     embeddedServer(Netty, port = getPORT(), host = "0.0.0.0") {
         val config = HoconApplicationConfig(ConfigFactory.load())
         val tokenManager = TokenManager(config)
+        val db = DatabaseConnection.database
 
         install(Authentication) {
             jwt {  verifyJWT(tokenManager, config)  }
         }
         install(ContentNegotiation) {  json()  }
-        configureRouting()
+        configureRouting(db)
     }.start(wait = true)
 }
 

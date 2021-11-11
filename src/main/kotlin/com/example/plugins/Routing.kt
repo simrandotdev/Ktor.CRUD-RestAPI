@@ -3,12 +3,11 @@ package com.example.plugins
 import com.example.routing.authenticationRoutes
 import com.example.routing.notesRoutes
 import io.ktor.routing.*
-import io.ktor.http.*
 import io.ktor.application.*
 import io.ktor.response.*
-import io.ktor.request.*
+import org.ktorm.database.Database
 
-fun Application.configureRouting() {
+fun Application.configureRouting(db: Database) {
 
     routing {
         get("/") {
@@ -16,6 +15,6 @@ fun Application.configureRouting() {
         }
     }
 
-    notesRoutes()
-    authenticationRoutes()
+    notesRoutes(db)
+    authenticationRoutes(db)
 }
