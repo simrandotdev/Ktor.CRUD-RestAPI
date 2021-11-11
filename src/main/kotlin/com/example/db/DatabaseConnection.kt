@@ -1,12 +1,17 @@
 package com.example.db
 
+import com.typesafe.config.ConfigFactory
+import io.ktor.config.*
 import org.ktorm.database.Database
 
 object DatabaseConnection {
+
+    private val config = HoconApplicationConfig(ConfigFactory.load())
+
     val database = Database.connect(
-        url = "jdbc:mysql://dfkpczjgmpvkugnb.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/y7u4pdrx9dhw5t3m",
-        driver = "com.mysql.cj.jdbc.Driver",
-        user = "srj5burxiy89ilin",
-        password = "x7hedgmspaynthlp"
+        url = config.property("DB_URL").getString(),
+        driver = config.property("DB_DRIVER").getString(),
+        user = config.property("DB_USER").getString(),
+        password = config.property("DB_PASSWORD").getString(),
     )
 }

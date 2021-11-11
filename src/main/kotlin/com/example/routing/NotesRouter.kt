@@ -16,6 +16,9 @@ fun Application.notesRoutes() {
     val db = DatabaseConnection.database
 
     routing {
+        /**
+         * Return all the notes from the Database
+         */
         get("/notes") {
             val notes = db.from(NotesEntity).select()
                 .map {
@@ -26,6 +29,10 @@ fun Application.notesRoutes() {
             call.respond(notes)
         }
 
+
+        /**
+         * Create the Note from the parameters sent in the body
+         */
         post("/notes") {
             val request = call.receive<NoteRequest>()
             val result = db.insert(NotesEntity) {
@@ -47,6 +54,10 @@ fun Application.notesRoutes() {
             }
         }
 
+
+        /**
+         * Get a single note with the id passed in the url if available
+         */
         get("/notes/{id}") {
             val id = call.parameters["id"]?.toInt() ?: -1
 
@@ -78,6 +89,10 @@ fun Application.notesRoutes() {
             }
         }
 
+
+        /**
+         * Update the note with the id passed in the url and new parameters in the body is available
+         */
         put("/notes/{id}"){
             val id =call.parameters["id"]?.toInt() ?: -1
             val updatedNote =call.receive<NoteRequest>()
@@ -108,6 +123,10 @@ fun Application.notesRoutes() {
             }
         }
 
+
+        /**
+         * Delete the note with the id passed in the url if available
+         */
         delete("/notes/{id}"){
             val id =call.parameters["id"]?.toInt() ?: -1
             val rowsEffected = db.delete(NotesEntity){

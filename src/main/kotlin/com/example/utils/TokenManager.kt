@@ -7,28 +7,28 @@ import com.example.models.User
 import io.ktor.config.*
 import java.util.*
 
-class TokenManager(val config: HoconApplicationConfig) {
-    val audience = config.property("audience").getString()
-    val secret = config.property("secret").getString()
-    val issuer = config.property("issuer").getString()
-    val expirationDate = System.currentTimeMillis() + 600000;
+class TokenManager(config: HoconApplicationConfig) {
+    private val audience = config.property("audience").getString()
+    private val secret = config.property("secret").getString()
+    private val issuer = config.property("issuer").getString()
+    private val expirationDate = System.currentTimeMillis() + 600000;
 
-    fun generateJWTToken(user: User): String {
+    /***
+     * Takes in the user object and returns a JWT token with username and userId embedded in it.
+     */
+    fun generateJWTToken(user: User): String = JWT.create()
+        .withAudience(audience)
+        .withIssuer(issuer)
+        .withClaim("username", user.username)
+        .withClaim("userId", user.id)
+        .withExpiresAt(Date(expirationDate))
+        .sign(Algorithm.HMAC256(secret))
 
-        val token = JWT.create()
-            .withAudience(audience)
-            .withIssuer(issuer)
-            .withClaim("username", user.username)
-            .withClaim("userId", user.id)
-            .withExpiresAt(Date(expirationDate))
-            .sign(Algorithm.HMAC256(secret))
-        return token
-    }
-
-    fun verifyJWTToken(): JWTVerifier {
-        return JWT.require(Algorithm.HMAC256(secret))
+    /**
+     * Verifies if the passed in JWT token in the request is valid or not
+     */
+    fun verifyJWTToken(): JWTVerifier = JWT.require(Algorithm.HMAC256(secret))
             .withAudience(audience)
             .withIssuer(issuer)
             .build()
-    }
 }

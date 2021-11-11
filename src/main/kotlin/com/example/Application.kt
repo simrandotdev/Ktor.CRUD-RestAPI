@@ -14,29 +14,38 @@ import io.ktor.serialization.*
 import org.ktorm.database.Database
 
 fun main() {
-    embeddedServer(Netty, port = System.getenv("PORT").toInt(), host = "0.0.0.0") {
+    embeddedServer(Netty, port = getPORT(), host = "0.0.0.0") {
         val config = HoconApplicationConfig(ConfigFactory.load())
         val tokenManager = TokenManager(config)
 
         install(Authentication) {
-            jwt {
-                verifier(tokenManager.verifyJWTToken())
-                realm = config.property("realm").getString()
-                validate { jwtCredential ->
-                    if(jwtCredential.payload.getClaim("username").asString().isNotEmpty()) {
-                        JWTPrincipal(jwtCredential.payload)
-                    } else {
-                        null
-                    }
-                }
-            }
+            jwt {  verifyJWT(tokenManager, config)  }
         }
-        install(ContentNegotiation) {
-            json()
-        }
-
+        install(ContentNegotiation) {  json()  }
         configureRouting()
-
-
     }.start(wait = true)
+}
+
+private fun JWTAuthenticationProvider.Configuration.verifyJWT(
+    tokenManager: TokenManager,
+    config: HoconApplicationConfig
+) {
+    verifier(tokenManager.verifyJWTToken())
+    realm = config.property("realm").getString()
+    validate { jwtCredential ->
+        if (jwtCredential.payload.getClaim("username").asString().isNotEmpty()) {
+            JWTPrincipal(jwtCredential.payload)
+        } else {
+            null
+        }
+    }
+}
+
+fun getPORT(): Int {
+    var PORT = 5555
+
+    if (System.getenv("PORT") != null) {
+        PORT = System.getenv("PORT").toInt()
+    }
+    return PORT
 }

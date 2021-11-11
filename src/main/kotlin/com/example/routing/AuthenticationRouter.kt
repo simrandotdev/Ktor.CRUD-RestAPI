@@ -24,6 +24,9 @@ fun Application.authenticationRoutes() {
     val tokenManager = TokenManager(HoconApplicationConfig(ConfigFactory.load()))
 
     routing {
+        /**
+         * Registers the user with the send username and password
+         */
         post("/register") {
             val userCredentials = call.receive<UserCredentials>()
 
@@ -61,7 +64,9 @@ fun Application.authenticationRoutes() {
             )
         }
 
-
+        /**
+         * Log In the user with the sent username and password and send a JWT token back
+         */
         post("/login") {
             val userCredentials = call.receive<UserCredentials>()
 
@@ -104,7 +109,11 @@ fun Application.authenticationRoutes() {
             NoteResponse(success = true, data = token))
         }
 
+
         authenticate {
+            /**
+             * Protected route that returns the logged in users information.
+             */
             get("/me") {
                 val principle = call.principal<JWTPrincipal>()
                 val username = principle!!.payload.getClaim("username").asString()
