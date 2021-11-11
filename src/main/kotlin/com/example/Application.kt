@@ -24,7 +24,7 @@ fun main() {
             jwt {  verifyJWT(tokenManager, config)  }
         }
         install(ContentNegotiation) {  json()  }
-        configureRouting(db)
+        configureRouting(db, config)
     }.start(wait = true)
 }
 
